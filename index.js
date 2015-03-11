@@ -40,6 +40,9 @@ var defaults = {
                     next();
                 } else {
                     var q = req.parsedParams?req.path+'?'+querystring.stringify(req.parsedParams):req.originalUrl;
+                    if(q.indexOf('/v1') == -1){
+                        q = '/v1'+q;
+                    }
                     res.redirect(this.settings.login_url+'?'+querystring.stringify({return_url: q}));
                 }
             },
@@ -386,7 +389,7 @@ OpenIDConnect.prototype.parseParams = function(req, res, spec) {
 OpenIDConnect.prototype.login = function(validateUser) {
     var self = this;
 
-    return [self.use({policies: {loggedIn: false}, models: 'user'}),
+    return [self.use({policies: {loggedIn: false}, models: ['user', 'client']}),
             function(req, res, next) {
                 validateUser(req, /*next:*/function(error,user) {
                     if(!error && !user) {
@@ -516,6 +519,9 @@ OpenIDConnect.prototype.auth = function() {
                                 if(redirect) {
                                     req.session.client_key = params.client_id;
                                     var q = req.path+'?'+querystring.stringify(params);
+                                    if(q.indexOf('/v1') == -1) {
+                                        q = '/v1'+q;
+                                    }
                                     deferred.reject({type: 'redirect', uri: self.settings.consent_url+'?'+querystring.stringify({return_url: q})});
                                 } else {
                                     deferred.resolve(params);

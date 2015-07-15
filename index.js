@@ -589,6 +589,7 @@ OpenIDConnect.prototype.auth = function() {
                                 def.resolve({id_token: {
                                         iss: req.protocol+'://'+req.headers.host,
                                         sub: req.session.sub||req.session.user,
+                                        subscription_id: req.session.subscription_id,
                                         aud: params.client_id,
                                         exp: d+3600,
                                         iat: d,

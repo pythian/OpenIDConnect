@@ -39,6 +39,9 @@ var defaults = {
                 if(req.session.user) {
                     next();
                 } else {
+                    if(req.query.subscription_id) {
+                        req.parsedParams.subscription_id = req.query.subscription_id;
+                    }
                     var q = req.parsedParams?req.path+'?'+querystring.stringify(req.parsedParams):req.originalUrl;
                     if(q.indexOf('/v1') == -1){
                         q = '/v1'+q;
